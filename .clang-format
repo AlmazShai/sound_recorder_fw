@@ -1,0 +1,121 @@
+##
+##    __  __________  _________  ___ 
+##   /  |/  /  _/ _ \/ ___/ __ \/ _ \
+##  / /|_/ // // , _/ /__/ /_/ / // /
+## /_/  /_/___/_/|_|\___/\____/____/ 
+## ........................... Team
+## Copyright (C) 2021 Mircod, Kazan
+##
+## @file:    .clang-format
+## @brief:   ClangFormat root configuration file
+## @license: C̲o̲m̲m̲e̲r̲c̲i̲a̲l̲
+##           Unauthorized copying of this file, via any medium is strictly prohibited.
+##
+
+---
+AccessModifierOffset: -4                                     # clang-format 3.3
+AlignAfterOpenBracket: Align                                 # clang-format 3.8
+AlignArrayOfStructures: Left                                 # clang-format 13
+AlignConsecutiveAssignments: AcrossComments                  # clang-format 3.8
+AlignConsecutiveBitFields: AcrossEmptyLinesAndComments       # clang-format 11
+AlignConsecutiveDeclarations: AcrossComments                 # clang-format 3.8
+AlignConsecutiveMacros: AcrossEmptyLinesAndComments          # clang-format 9
+AlignEscapedNewlines: Right                                  # clang-format 5
+AlignOperands: Align                                         # clang-format 12
+AlignTrailingComments: true                                  # clang-format 3.7
+AllowAllArgumentsOnNextLine: false                           # clang-format 9
+AllowAllParametersOfDeclarationOnNextLine: true              # clang-format 3.3
+AllowShortBlocksOnASingleLine: Empty                         # clang-format 11
+AllowShortCaseLabelsOnASingleLine: false                    # clang-format 3.6
+AllowShortEnumsOnASingleLine: false                          # clang-format 12
+AllowShortFunctionsOnASingleLine: Empty                      # clang-format 3.5
+AllowShortIfStatementsOnASingleLine: Never                   # clang-format 9
+AllowShortLambdasOnASingleLine: Inline                       # clang-format 9
+AllowShortLoopsOnASingleLine: false                          # clang-format 3.7
+AlwaysBreakAfterReturnType: None                             # clang-format 3.8
+AlwaysBreakBeforeMultilineStrings: false                     # clang-format 3.4
+AlwaysBreakTemplateDeclarations: Yes                         # clang-format 7
+BinPackArguments: true                                       # clang-format 3.7
+BinPackParameters: true                                      # clang-format 3.7
+BitFieldColonSpacing: Both                                   # clang-format 12
+BreakBeforeBraces: Custom                                    # clang-format 3.7
+BraceWrapping:                                               # clang-format 3.8
+    AfterCaseLabel: true
+    AfterClass: true
+    AfterControlStatement: Always
+    AfterEnum: true
+    AfterFunction: true
+    AfterNamespace: true
+    AfterStruct: true
+    AfterUnion: true
+    AfterExternBlock: false
+    BeforeCatch: true
+    BeforeElse: true
+    BeforeLambdaBody: false
+    BeforeWhile: false
+    IndentBraces: false
+    SplitEmptyFunction: false
+    SplitEmptyRecord: false
+    SplitEmptyNamespace: false
+BreakBeforeBinaryOperators: None                             # clang-format 3.6
+BreakBeforeTernaryOperators: false                           # clang-format 3.7
+BreakConstructorInitializers: BeforeComma                    # clang-format 5
+BreakInheritanceList: AfterComma                             # clang-format 7
+BreakStringLiterals: true                                    # clang-format 3.9
+ColumnLimit: 90                                              # clang-format 3.7
+CompactNamespaces: false                                     # clang-format 5
+ConstructorInitializerIndentWidth: 4                         # clang-format 3.7
+ContinuationIndentWidth: 4                                   # clang-format 3.7
+Cpp11BracedListStyle: true                                   # clang-format 3.4
+DeriveLineEnding: true                                       # clang-format 11
+EmptyLineAfterAccessModifier: Always                         # clang-format 14
+EmptyLineBeforeAccessModifier: Always                        # clang-format 13
+FixNamespaceComments: true                                   # clang-format 5
+IndentAccessModifiers: false                                 # clang-format 13
+IndentCaseBlocks: false                                      # clang-format 11
+IndentCaseLabels: true                             # clang-format 3.3
+IndentExternBlock: NoIndent                                  # clang-format 12
+IndentGotoLabels: false                                      # clang-format 10
+IndentPPDirectives: None                                     # clang-format 6
+IndentRequires: false                                        # clang-format 13
+IndentWidth: 4                                               # clang-format 3.7
+IndentWrappedFunctionNames: true                             # clang-format 3.7
+InsertTrailingCommas: None                                   # clang-format 12
+KeepEmptyLinesAtTheStartOfBlocks: false                      # clang-format 3.7
+LambdaBodyIndentation: Signature                             # clang-format 13
+Language: Cpp                                                # clang-format 3.5
+MaxEmptyLinesToKeep: 1                                       # clang-format 3.7
+NamespaceIndentation: None                                   # clang-format 3.7
+PointerAlignment: Left                                       # clang-format 3.7
+# QualifierAlignment: Custom                                                   # clang-format 14
+# QualifierOrder: ['static', 'inline', 'constexpr', const', 'volatile', type'] # clang-format 14
+ReferenceAlignment: Pointer                                     # clang-format 14
+ReflowComments: true                                         # clang-format 4
+SortIncludes: Never                                          # clang-format 4
+SortUsingDeclarations: false                                 # clang-format 5
+SpaceAfterCStyleCast: false                                  # clang-format 3.5
+SpaceAfterLogicalNot: false                                  # clang-format 9
+SpaceAfterTemplateKeyword: false                             # clang-format 4
+SpaceAroundPointerQualifiers: Default                        # clang-format 12
+SpaceBeforeAssignmentOperators: true                         # clang-format 3.7
+SpaceBeforeCaseColon: false                                  # clang-format 12
+SpaceBeforeCpp11BracedList: true                             # clang-format 7
+SpaceBeforeCtorInitializerColon: true                        # clang-format 7
+SpaceBeforeInheritanceColon: true                            # clang-format 7
+SpaceBeforeParens: ControlStatements                         # clang-format 3.5
+SpaceBeforeRangeBasedForLoopColon: false                     # clang-format 7
+SpaceBeforeSquareBrackets: false                             # clang-format 11
+SpaceInEmptyBlock: false                                     # clang-format 11
+SpaceInEmptyParentheses: false                               # clang-format 3.7
+SpacesBeforeTrailingComments: 1                              # clang-format 3.7
+SpacesInAngles: Never                                        # clang-format 14
+SpacesInCStyleCastParentheses: false                         # clang-format 3.7
+SpacesInConditionalStatement: false                          # clang-format 11
+SpacesInContainerLiterals: false                             # clang-format 3.7
+SpacesInParentheses: false                                   # clang-format 3.7
+SpacesInSquareBrackets: false                                # clang-format 3.7
+Standard: Latest                                             # clang-format 3.7
+UseTab: Never
+UseCRLF: true
+...
+
