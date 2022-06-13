@@ -12,6 +12,8 @@
 #include "board.h"
 #include "stm32f4xx_hal.h"
 
+#include <stdio.h>
+
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None
@@ -48,9 +50,11 @@ static void board_evt_handler(board_evt_t evt_type)
     switch (evt_type)
     {
         case BOARD_EVT_BTN_SHORT_PRESS:
+        	printf("Button short press action\n");
             board_led_blink_enable();
             break;
         case BOARD_EVT_BTN_LONG_PRESS:
+        	printf("Button long press action\n");
             board_led_blink_disable();
             break;
         default:
@@ -71,13 +75,18 @@ int main(void)
 
     err_code = board_init();
     if (err_code != CODE_SUCCESS)
-    {}
+    {
+    	// TODO: handle somehow
+    }
 
     board_set_evt_cb(board_evt_handler);
 
     board_button_enable_evt();
 
+    printf("Application initialized\n");
+
     while (1)
     {
     }
+    return 0;
 }

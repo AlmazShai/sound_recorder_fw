@@ -7,6 +7,11 @@
 static board_evt_cb_t    evt_cb = NULL;
 static TIM_HandleTypeDef tim_led;
 
+void SysTick_Handler(void)
+{
+    HAL_IncTick();
+}
+
 void TIM4_IRQHandler(void)
 {
     HAL_TIM_IRQHandler(&tim_led);
@@ -33,8 +38,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t pin)
     static uint32_t push_tick        = 0;
     uint32_t        release_tick     = 0;
     board_evt_t     evt_type;
+
     // check edge type
-    GPIO_PinState   pin_state =
+    GPIO_PinState pin_state =
         HAL_GPIO_ReadPin(BOARD_START_STOP_PORT, BOARD_START_STOP_PIN);
     // save systick on button push end return
     if (pin_state == GPIO_PIN_SET)
@@ -64,7 +70,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t pin)
     }
 
     // choose event type
-    if (BUTTON_LONG_PRESS_SEC < push_duration_ms)
+    if (BUTTON_LONG_PRESS_MS < push_duration_ms)
     {
         evt_type = BOARD_EVT_BTN_LONG_PRESS;
     }
@@ -85,6 +91,7 @@ static void button_init(void)
 
     // Init button gpio
     __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOD_CLK_ENABLE();
 
     GPIO_InitStruct.Pin   = BOARD_START_STOP_PIN;
     GPIO_InitStruct.Mode  = GPIO_MODE_IT_RISING_FALLING;
@@ -115,17 +122,17 @@ ret_code_t led_tim_init(void)
 
     /* -----------------------------------------------------------------------
     TIM4 Configuration: Output Compare Timing Mode:
-      To get TIM4 counter clock at 550 KHz, the prescaler is computed as follows:
+      To get TIM4 counter clock at 50 KHz, the prescaler is computed as follows:
       Prescaler = (TIM4CLK / TIM4 counter clock) - 1
-      Prescaler = ((f(APB1) * 2) /550 KHz) - 1
+      Prescaler = ((f(APB1) * 2) /50 KHz) - 1
 
-      CC update rate = TIM4 counter clock / CCR_Val = 32.687 Hz
-      ==> Toggling frequency = 16.343 Hz
+      CC update rate = TIM4 counter clock / sConfigLed.Pulse = 1 Hz
+      ==> Toggling frequency = 2 Hz
     ----------------------------------------------------------------------- */
 
     /* Compute the prescaler value */
     tmpvalue       = HAL_RCC_GetPCLK1Freq();
-    prescalervalue = (uint16_t)((tmpvalue * 2) / 550000) - 1;
+    prescalervalue = (uint16_t)((tmpvalue * 2) / 50000) - 1;
 
     /* Time base configuration */
     tim_led.Instance           = TIM4;
@@ -141,7 +148,7 @@ ret_code_t led_tim_init(void)
     /* Output Compare Timing Mode configuration: Channel1 */
     sConfigLed.OCMode       = TIM_OCMODE_TIMING;
     sConfigLed.OCIdleState  = TIM_OCIDLESTATE_SET;
-    sConfigLed.Pulse        = 16826;
+    sConfigLed.Pulse        = 50000;
     sConfigLed.OCPolarity   = TIM_OCPOLARITY_HIGH;
     sConfigLed.OCNPolarity  = TIM_OCNPOLARITY_HIGH;
     sConfigLed.OCFastMode   = TIM_OCFAST_ENABLE;
@@ -163,6 +170,8 @@ ret_code_t clock_init(void)
     /* Enable Power Control clock */
     __HAL_RCC_PWR_CLK_ENABLE();
     __HAL_RCC_SYSCFG_CLK_ENABLE();
+
+    HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_0);
 
     /* The voltage scaling allows optimizing the power consumption when the device is
        clocked below the maximum system frequency, to update the voltage scaling value

@@ -3,8 +3,8 @@
 
 #include "err_code.h"
 
-#define BUTTON_DEBOUNCE_TIME_MS 400
-#define BUTTON_LONG_PRESS_SEC   5
+#define BUTTON_DEBOUNCE_TIME_MS 200
+#define BUTTON_LONG_PRESS_MS   	2000
 
 typedef enum
 {
