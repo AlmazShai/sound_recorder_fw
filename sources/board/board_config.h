@@ -2,6 +2,7 @@
 #define BOARD_CONFIG_H_
 
 #include "stm32f4xx_hal_gpio.h"
+#include "stm32f4xx.h"
 
 // Define recording start/stop pin
 #define BOARD_START_STOP_PORT GPIOA

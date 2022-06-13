@@ -1,44 +1,81 @@
 #include "board.h"
 
-#include "board_config.h"
+#include "stm32f4xx_hal.h"
 
-#include "stm32f4xx_hal_rcc.h"
-#include "stm32f4xx_hal_gpio.h"
-#include "stm32f4xx_hal_cortex.h"
-#include "stm32f4xx_hal_tim.h"
+#include "board_config.h"
 
 static board_evt_cb_t    evt_cb = NULL;
 static TIM_HandleTypeDef tim_led;
 
-static void TIM4_IRQHandler(void)
+void TIM4_IRQHandler(void)
 {
     HAL_TIM_IRQHandler(&tim_led);
 }
 
-static void EXTI0_IRQHandler(void)
+void EXTI0_IRQHandler(void)
 {
     HAL_GPIO_EXTI_IRQHandler(BOARD_START_STOP_PIN);
 }
 
-static void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef* htim) {}
+void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef* htim)
+{
+    HAL_GPIO_TogglePin(BOARD_LED_GREEN_PORT, BOARD_LED_GREEN_PIN);
+}
 
-static void HAL_GPIO_EXTI_IRQHandler(uint16_t pin)
+void HAL_GPIO_EXTI_Callback(uint16_t pin)
 {
     if (pin != BOARD_START_STOP_PIN)
     {
         return;
     }
 
+    uint16_t        push_duration_ms = 0;
+    static uint32_t push_tick        = 0;
+    uint32_t        release_tick     = 0;
+    board_evt_t     evt_type;
     // check edge type
-
-    // save systick on falling edge
-
-    // check button push duration on rising edge
-
-    // handle evt callback
-    if (cb != NULL)
+    GPIO_PinState   pin_state =
+        HAL_GPIO_ReadPin(BOARD_START_STOP_PORT, BOARD_START_STOP_PIN);
+    // save systick on button push end return
+    if (pin_state == GPIO_PIN_SET)
     {
-        cb(evt_type);
+        push_tick = HAL_GetTick();
+        return;
+    }
+    // calculate button push duration on button release
+    else
+    {
+        release_tick = HAL_GetTick();
+        // check for tick overflow
+        if (release_tick < push_tick)
+        {
+            push_duration_ms = (UINT32_MAX - push_tick) + release_tick;
+        }
+        else
+        {
+            push_duration_ms = release_tick - push_tick;
+        }
+    }
+
+    // return then push duration less than debounce time
+    if (BUTTON_DEBOUNCE_TIME_MS > push_duration_ms)
+    {
+        return;
+    }
+
+    // choose event type
+    if (BUTTON_LONG_PRESS_SEC < push_duration_ms)
+    {
+        evt_type = BOARD_EVT_BTN_LONG_PRESS;
+    }
+    else
+    {
+        evt_type = BOARD_EVT_BTN_SHORT_PRESS;
+    }
+    // handle evt callback
+    if (evt_cb != NULL)
+    {
+        evt_cb(evt_type);
     }
 }
 
@@ -65,8 +102,9 @@ static void button_init(void)
 
 ret_code_t led_tim_init(void)
 {
-    uint16_t prescalervalue = 0;
-    uint32_t tmpvalue       = 0;
+    uint16_t           prescalervalue = 0;
+    uint32_t           tmpvalue       = 0;
+    TIM_OC_InitTypeDef sConfigLed     = {0};
 
     /* TIM4 clock enable */
     __HAL_RCC_TIM4_CLK_ENABLE();
@@ -103,7 +141,7 @@ ret_code_t led_tim_init(void)
     /* Output Compare Timing Mode configuration: Channel1 */
     sConfigLed.OCMode       = TIM_OCMODE_TIMING;
     sConfigLed.OCIdleState  = TIM_OCIDLESTATE_SET;
-    sConfigLed.Pulse        = CCR1Val;
+    sConfigLed.Pulse        = 16826;
     sConfigLed.OCPolarity   = TIM_OCPOLARITY_HIGH;
     sConfigLed.OCNPolarity  = TIM_OCNPOLARITY_HIGH;
     sConfigLed.OCFastMode   = TIM_OCFAST_ENABLE;
@@ -125,8 +163,6 @@ ret_code_t clock_init(void)
     /* Enable Power Control clock */
     __HAL_RCC_PWR_CLK_ENABLE();
     __HAL_RCC_SYSCFG_CLK_ENABLE();
-
-    HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_0);
 
     /* The voltage scaling allows optimizing the power consumption when the device is
        clocked below the maximum system frequency, to update the voltage scaling value
@@ -175,7 +211,7 @@ ret_code_t board_init(void)
     ret_code_t err_code;
     button_init();
     err_code = led_tim_init();
-    if(err_code != CODE_SUCCESS)
+    if (err_code != CODE_SUCCESS)
     {
         return err_code;
     }
