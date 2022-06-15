@@ -62,8 +62,5 @@ ret_code_t clock_init(void)
 
 ret_code_t board_init(void)
 {
-    // Init button gpio
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_GPIOD_CLK_ENABLE();
     return clock_init();
 }

@@ -141,6 +141,8 @@ inline static void gpio_init(void)
 {
     GPIO_InitTypeDef GPIO_InitStruct;
 
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+
     HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
 
     GPIO_InitStruct.Pin   = BOARD_START_STOP_PIN;
@@ -163,12 +165,11 @@ inline static ret_code_t timer_init(void)
 
     /* -----------------------------------------------------------------------
     TIM3 Configuration: Output Compare Timing Mode:
-      To get TIM3 counter clock at 1 KHz, the prescaler is computed as follows:
+      To get TIM3 counter clock at 10 KHz, the prescaler is computed as follows:
       Prescaler = (TIM3CLK / TIM3 counter clock) - 1
-      Prescaler = ((f(APB1) * 2) / 1 KHz) - 1
+      Prescaler = ((f(APB1) * 2) / 10 KHz) - 1
 
-      CC update rate = TIM3 counter clock / sConfigLed.Pulse = 1 Hz
-      ==> Toggling frequency = 2 Hz
+      TIM3 updating period = 0.1 ms
     ----------------------------------------------------------------------- */
 
     /* Compute the prescaler value */
@@ -237,7 +238,15 @@ void board_button_evt_enable(void)
 void board_button_evt_disable(void)
 {
     // stop timer
-
+    if ((tim_state == TIM_STATE_PUSH_DEBOUNCING) ||
+        (tim_state == TIM_STATE_RELEASE_DEBOUNCING))
+    {
+        HAL_TIM_OC_Stop_IT(&tim_button, TIM_CHANNEL_1);
+    }
+    else if (tim_state == TIM_STATE_LONG_PRESS_DETECTION)
+    {
+        HAL_TIM_OC_Stop_IT(&tim_button, TIM_CHANNEL_2);
+    }
     // Disable button EXTI Interrupt
     HAL_NVIC_DisableIRQ(EXTI0_IRQn);
 }

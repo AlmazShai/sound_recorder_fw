@@ -23,6 +23,7 @@ static void led_toggle_cb(TIM_HandleTypeDef* htim)
 inline static void gpio_init(void)
 {
     GPIO_InitTypeDef GPIO_InitStruct;
+    __HAL_RCC_GPIOD_CLK_ENABLE();
     // init LED gpio
     GPIO_InitStruct.Pin   = BOARD_LED_GREEN_PIN;
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
@@ -46,12 +47,12 @@ inline static ret_code_t led_tim_init(void)
 
     /* -----------------------------------------------------------------------
     TIM4 Configuration: Output Compare Timing Mode:
-      To get TIM4 counter clock at 50 KHz, the prescaler is computed as follows:
+      To get TIM4 counter clock at 100 KHz, the prescaler is computed as follows:
       Prescaler = (TIM4CLK / TIM4 counter clock) - 1
-      Prescaler = ((f(APB1) * 2) /50 KHz) - 1
+      Prescaler = ((f(APB1) * 2) /100 KHz) - 1
 
-      CC update rate = TIM4 counter clock / sConfigLed.Pulse = 1 Hz
-      ==> Toggling frequency = 2 Hz
+      CC update rate = TIM4 counter clock / sConfigLed.Pulse = 10 Hz
+      ==> Toggling frequency = 20 Hz
     ----------------------------------------------------------------------- */
 
     /* Compute the prescaler value */

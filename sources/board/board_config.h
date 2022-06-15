@@ -5,14 +5,27 @@
 #include "stm32f4xx.h"
 
 // Define recording start/stop pin
-#define BOARD_START_STOP_PORT GPIOA
-#define BOARD_START_STOP_PIN  GPIO_PIN_0
+#define BOARD_START_STOP_PORT       GPIOA
+#define BOARD_START_STOP_PIN        GPIO_PIN_0
 
 // Define LED config
-#define BOARD_LED_GREEN_PORT  GPIOD
-#define BOARD_LED_GREEN_PIN   GPIO_PIN_13
+#define BOARD_LED_GREEN_PORT        GPIOD
+#define BOARD_LED_GREEN_PIN         GPIO_PIN_13
 
 // Define microphone config
+#define BOARD_MIC_SAMPLING_FREQ_HZ  16000
+#define BOARD_MIC_I2S_INST          SPI2
+#define BOARD_MIC_I2S_SCK_PIN       GPIO_PIN_10
+#define BOARD_MIC_I2S_SCK_GPIO_PORT GPIOB
+#define BOARD_MIC_I2S_SCK_AF        GPIO_AF5_SPI2
+
+#define BOARD_MIC_I2S_SD_PIN        GPIO_PIN_3
+#define BOARD_MIC_I2S_SD_GPIO_PORT  GPIOC
+#define BOARD_MIC_I2S_SD_AF         GPIO_AF5_SPI2
+
+#define BOARD_MIC_I2S_DMA_STREAM    DMA1_Stream3
+#define BOARD_MIC_I2S_DMA_CHANNEL   DMA_CHANNEL_0
+#define BOARD_MIC_I2S_DMA_IRQ       DMA1_Stream3_IRQn
 
 // Define sd card connection
 
