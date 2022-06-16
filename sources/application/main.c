@@ -95,11 +95,14 @@ int main(void)
     err_code = board_led_init();
     assert(err_code == CODE_SUCCESS);
 
+    err_code =   recorder_init();
+    assert(err_code == CODE_SUCCESS);
+
     board_set_evt_cb(board_evt_handler);
 
     board_button_evt_enable();
 
-    recorder_init();
+
 
     printf("Application initialized\n");
 

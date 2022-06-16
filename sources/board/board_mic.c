@@ -10,7 +10,7 @@ static board_mic_evt_cb_t evt_cb    = NULL;
 static uint16_t*          p_buff    = NULL;
 static uint16_t           buff_size = 0;
 
-void I2S2_IRQHandler(void)
+void DMA1_Stream3_IRQHandler(void)
 {
     HAL_DMA_IRQHandler(i2s.hdmarx);
 }
@@ -99,6 +99,21 @@ inline static ret_code_t dma_init(void)
     return CODE_SUCCESS;
 }
 
+inline static void i2s_clk_init(void)
+{
+    RCC_PeriphCLKInitTypeDef rccclkinit;
+    /*Enable PLLI2S clock*/
+    HAL_RCCEx_GetPeriphCLKConfig(&rccclkinit);
+
+    /* Audio frequency multiple of 8 (8/16/32/48/96/192)*/
+    /* PLLI2S_VCO Output = PLLI2S_VCO Input * PLLI2SN = 192 Mhz */
+    /* I2SCLK = PLLI2S_VCO Output/PLLI2SR = 192/6 = 32 Mhz */
+    rccclkinit.PeriphClockSelection = RCC_PERIPHCLK_I2S;
+    rccclkinit.PLLI2S.PLLI2SN       = 192;
+    rccclkinit.PLLI2S.PLLI2SR       = 6;
+    HAL_RCCEx_PeriphCLKConfig(&rccclkinit);
+}
+
 inline static ret_code_t i2s_init(void)
 {
     __HAL_RCC_SPI2_CLK_ENABLE();
@@ -131,13 +146,17 @@ ret_code_t board_mic_init(board_mic_puff_cfg_t* cfg)
     {
         return CODE_ERR_INVALID_PARAM;
     }
-    p_buff = cfg->p_buff;
+    p_buff    = cfg->p_buff;
     buff_size = cfg->buff_size;
+
     gpio_init();
+
     if (dma_init() != CODE_SUCCESS)
     {
         return CODE_ERR_INTERNAL;
     }
+    
+    i2s_clk_init();
     if (i2s_init() != CODE_SUCCESS)
     {
         return CODE_ERR_INTERNAL;
@@ -145,10 +164,9 @@ ret_code_t board_mic_init(board_mic_puff_cfg_t* cfg)
     return CODE_SUCCESS;
 }
 
-
 void board_mic_set_cb(board_mic_evt_cb_t cb)
 {
-	evt_cb = cb;
+    evt_cb = cb;
 }
 
 ret_code_t board_mic_start_stream(void)
