@@ -13,7 +13,6 @@
 #define BOARD_LED_GREEN_PIN         GPIO_PIN_13
 
 // Define microphone config
-#define BOARD_MIC_SAMPLING_FREQ_HZ  16000
 #define BOARD_MIC_I2S_INST          SPI2
 #define BOARD_MIC_I2S_SCK_PIN       GPIO_PIN_10
 #define BOARD_MIC_I2S_SCK_GPIO_PORT GPIOB

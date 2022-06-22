@@ -24,6 +24,8 @@ void board_button_evt_enable(void);
 
 void board_button_evt_disable(void);
 
+ret_code_t board_led_init(void);
+
 void board_led_blink_enable(void);
 
 void board_led_blink_disable(void);
