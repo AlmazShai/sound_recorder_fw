@@ -44,5 +44,10 @@
 			<type>2</type>
 			<location>/home/almaz/Projects/STM/sound_recorder_fw/sources/sdk</location>
 		</link>
+		<link>
+			<name>third_party</name>
+			<type>2</type>
+			<location>/home/almaz/Projects/STM/sound_recorder_fw/sources/third_party</location>
+		</link>
 	</linkedResources>
 </projectDescription>

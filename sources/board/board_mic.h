@@ -3,6 +3,8 @@
 
 #include "err_code.h"
 
+#define BOARD_MIC_I2S_SCK_FREQ_HZ (1024000u)
+
 typedef enum
 {
     BOARD_MIC_EVT_HALF_TR_COMPLETE,

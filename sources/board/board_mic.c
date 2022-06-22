@@ -3,10 +3,13 @@
 #include "stm32f4xx_hal.h"
 
 #include "board_config.h"
+#include "app_config.h"
 
+static board_mic_evt_cb_t evt_cb = NULL;
+// I2S params
 static I2S_HandleTypeDef  i2s;
 static DMA_HandleTypeDef  i2s_dma;
-static board_mic_evt_cb_t evt_cb    = NULL;
+// buffer params
 static uint16_t*          p_buff    = NULL;
 static uint16_t           buff_size = 0;
 
@@ -76,7 +79,7 @@ inline static ret_code_t dma_init(void)
     i2s_dma.Init.PeriphInc           = DMA_PINC_DISABLE;
     i2s_dma.Init.MemInc              = DMA_MINC_ENABLE;
     i2s_dma.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
-    i2s_dma.Init.MemDataAlignment    = DMA_PDATAALIGN_HALFWORD;
+    i2s_dma.Init.MemDataAlignment    = DMA_MDATAALIGN_HALFWORD;
     i2s_dma.Init.Mode                = DMA_CIRCULAR;
     i2s_dma.Init.Priority            = DMA_PRIORITY_HIGH;
     i2s_dma.Init.FIFOMode            = DMA_FIFOMODE_DISABLE;
@@ -123,8 +126,11 @@ inline static ret_code_t i2s_init(void)
     /* Disable I2S block */
     __HAL_I2S_DISABLE(&i2s);
 
-    /* I2S peripheral configuration */
-    i2s.Init.AudioFreq   = 2 * BOARD_MIC_SAMPLING_FREQ_HZ;
+    /* i2s CSK frequency calculates as:
+    CSK clock = BOARD_MIC_I2S_SAMPLING_FREQ * 16 bytes * 2 channel
+    CSK clock  = 32000 * 16 * 2 = 1.024 MHz */
+
+    i2s.Init.AudioFreq   = I2S_AUDIOFREQ_32K;
     i2s.Init.ClockSource = I2S_CLOCK_PLL;
     i2s.Init.CPOL        = I2S_CPOL_HIGH;
     i2s.Init.DataFormat  = I2S_DATAFORMAT_16B;
@@ -149,13 +155,16 @@ ret_code_t board_mic_init(board_mic_puff_cfg_t* cfg)
     p_buff    = cfg->p_buff;
     buff_size = cfg->buff_size;
 
+    /* Enable CRC peripheral to unlock the PDM library */
+    __HAL_RCC_CRC_CLK_ENABLE();
+
     gpio_init();
 
     if (dma_init() != CODE_SUCCESS)
     {
         return CODE_ERR_INTERNAL;
     }
-    
+
     i2s_clk_init();
     if (i2s_init() != CODE_SUCCESS)
     {
