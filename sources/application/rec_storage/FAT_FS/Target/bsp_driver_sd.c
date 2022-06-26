@@ -38,7 +38,7 @@
 
 extern SD_HandleTypeDef hsd;
 
-/* USER CODE BEGIN BeforeInitSection */
+/* USER CODE BEGIN BOLD_APIeforeInitSection */
 /* can be used to modify / undefine following code or add code */
 /* USER CODE END BeforeInitSection */
 /**

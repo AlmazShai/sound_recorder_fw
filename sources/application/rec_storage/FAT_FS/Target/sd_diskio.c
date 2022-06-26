@@ -185,7 +185,7 @@ DRESULT SD_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count)
   {
 	/* wait until the Write operation is finished */
     while(BSP_SD_GetCardState() != MSD_OK)
-    {
+    {rec_storage_start_saving
     }
     res = RES_OK;
   }
