@@ -3,6 +3,8 @@
 
 #include "err_code.h"
 
+#define REC_STORAGE_BUFF_SIZE_BYTES 512
+
 ret_code_t rec_storage_init(void);
 
 ret_code_t rec_storage_start_saving(void);

@@ -150,7 +150,9 @@ ret_code_t recorder_init(void)
         return err_code;
     }
     pdm_filter_init();
-    return CODE_SUCCESS;
+
+    err_code = rec_storage_init();
+    return err_code;
 }
 
 ret_code_t recorder_start(void)
@@ -158,7 +160,14 @@ ret_code_t recorder_start(void)
     ret_code_t err_code;
     first_half_ready  = false;
     second_half_ready = false;
-    err_code          = board_mic_start_stream();
+
+    err_code = rec_storage_start_saving();
+    if (err_code != CODE_SUCCESS)
+    {
+        return err_code;
+    }
+
+    err_code = board_mic_start_stream();
     if (err_code != CODE_SUCCESS)
     {
         return err_code;
@@ -170,13 +179,15 @@ ret_code_t recorder_start(void)
 ret_code_t recorder_stop(void)
 {
     ret_code_t err_code;
+
     err_code = board_mic_stop_stream();
     if (err_code != CODE_SUCCESS)
     {
         return err_code;
     }
+    err_code = rec_storage_stop_saving();
     state = RECORDER_STATE_IDLE;
-    return CODE_SUCCESS;
+    return err_code;
 }
 
 void recorder_process(void)
@@ -186,18 +197,26 @@ void recorder_process(void)
         return;
     }
 
+    ret_code_t err_code;
+
+    // save first half buffer
     if (first_half_ready)
     {
         pdm_2_pcm_conversion(pdm_buff, pcm_buff);
 
-        rec_storage_save_data(pcm_buff, pcm_samples_n * 2);
+        err_code = rec_storage_save_data(pcm_buff, pcm_samples_n * 2);
+        assert(err_code == CODE_SUCCESS);
+
         first_half_ready = false;
     }
+    // save second half buffer
     if (second_half_ready)
     {
         pdm_2_pcm_conversion(&pdm_buff[RECORDER_PCM_BUFF_SIZE / 2], pcm_buff);
 
-        rec_storage_save_data(pcm_buff, pcm_samples_n * 2);
+        err_code = rec_storage_save_data(pcm_buff, pcm_samples_n * 2);
+        assert(err_code == CODE_SUCCESS);
+
         second_half_ready = false;
     }
 }
