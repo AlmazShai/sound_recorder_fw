@@ -25,7 +25,7 @@ ret_code_t rec_storage_start_saving(void)
     return CODE_SUCCESS;
 }
 
-ret_code_t rec_storage_save_data(uint16_t* p_data, uint16_t len_bytes)
+ret_code_t rec_storage_save_samples(uint16_t* p_data, uint16_t len_bytes)
 {
     ret_code_t err_code;
 

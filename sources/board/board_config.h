@@ -32,7 +32,7 @@
 #define BOARD_SD_CK_PIN             GPIO_PIN_12
 #define BOARD_SD_D0_PIN             GPIO_PIN_8
 #define BOARD_SD_D1_PIN             GPIO_PIN_9
-#define BAORD_SD_D2_PIN             GPIO_PIN_10
+#define BOARD_SD_D2_PIN             GPIO_PIN_10
 #define BOARD_SD_D3_PIN             GPIO_PIN_11
 #define BOARD_SD_DX_PORT            GPIOC
 

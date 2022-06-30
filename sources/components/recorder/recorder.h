@@ -6,9 +6,7 @@
 
 #define RECORDER_PDM_BUFF_SIZE (128u)
 #define RECORDER_PCM_BUFF_SIZE                                                           \
-    (RECORDER_PDM_BUFF_SIZE * 2) // make pcm output buffer same size to
-                                 // RECORDER_PDM_BUFF_SIZE,
-                                 // because with minimum decimation factor 16
+    (RECORDER_PDM_BUFF_SIZE * 2) // with minimum decimation factor 16
                                  // and doubling samples for stereo sound, twice
                                  // size buffer are required
 

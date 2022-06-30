@@ -13,12 +13,13 @@ static void gpio_init(void)
     __HAL_RCC_GPIOD_CLK_ENABLE();
 
     GPIO_InitStruct.Pin = BOARD_SD_CK_PIN | BOARD_SD_D0_PIN | BOARD_SD_D1_PIN |
-                          BAORD_SD_D2_PIN | BOARD_SD_D3_PIN;
+                          BOARD_SD_D2_PIN | BOARD_SD_D3_PIN;
     GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull      = GPIO_PULLUP;
     GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF12_SDIO;
     HAL_GPIO_Init(BOARD_SD_DX_PORT, &GPIO_InitStruct);
+
 
     GPIO_InitStruct.Pin       = BOARD_SD_CMD_PIN;
     GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
@@ -33,34 +34,34 @@ static ret_code_t sdio_init(void)
 
     __HAL_RCC_SDIO_CLK_ENABLE();
 
-    // NOTE: make sure that CK frequency not exceed 400 kHz
 
     hsd.Instance                 = SDIO;
     hsd.Init.ClockEdge           = SDIO_CLOCK_EDGE_RISING;
     hsd.Init.ClockBypass         = SDIO_CLOCK_BYPASS_DISABLE;
     hsd.Init.ClockPowerSave      = SDIO_CLOCK_POWER_SAVE_DISABLE;
-    hsd.Init.BusWide             = SDIO_BUS_WIDE_4B;
+    hsd.Init.BusWide             = SDIO_BUS_WIDE_1B;
     hsd.Init.HardwareFlowControl = SDIO_HARDWARE_FLOW_CONTROL_DISABLE;
-    hsd.Init.ClockDiv            = 32;
+    hsd.Init.ClockDiv            = 4;
 
     /* HAL SD initialization */
     if (HAL_SD_Init(&hsd) != HAL_OK)
     {
         return CODE_ERR_INTERNAL;
     }
+
     /* Configure SD Bus width (4 bits mode selected) */
     /* Enable wide operation */
-//    if (HAL_SD_ConfigWideBusOperation(&hsd, SDIO_BUS_WIDE_4B) != HAL_OK)
-//    {
-//        return CODE_ERR_INTERNAL;
-//    }
+    if (HAL_SD_ConfigWideBusOperation(&hsd, SDIO_BUS_WIDE_4B) != HAL_OK)
+    {
+        return CODE_ERR_INTERNAL;
+    }
     return CODE_SUCCESS;
 }
 
 static ret_code_t wait_while_busy(void)
 {
 	uint16_t timeout_tick = 0;
-    while (HAL_SD_GetCardState(&hsd) == HAL_SD_CARD_TRANSFER)
+    while (HAL_SD_GetCardState(&hsd) != HAL_SD_CARD_TRANSFER)
     {
         HAL_Delay(1);
         timeout_tick++;
