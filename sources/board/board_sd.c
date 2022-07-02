@@ -91,9 +91,9 @@ ret_code_t board_sd_read_block(uint32_t* p_data, uint32_t read_addr, uint32_t bl
     return wait_while_busy();
 }
 
-ret_code_t board_sd_write_block(uint32_t* p_data, uint32_t WriteAddr, uint32_t block_n)
+ret_code_t board_sd_write_block(uint32_t* p_data, uint32_t write_addr, uint32_t block_n)
 {
-    if (HAL_SD_WriteBlocks(&hsd, (uint8_t*)p_data, WriteAddr, block_n,
+    if (HAL_SD_WriteBlocks(&hsd, (uint8_t*)p_data, write_addr, block_n,
                            BOARD_SD_OP_TIMEOUT_MS) != HAL_OK)
     {
         return CODE_ERR_INTERNAL;

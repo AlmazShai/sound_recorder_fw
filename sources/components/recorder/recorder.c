@@ -204,7 +204,7 @@ void recorder_process(void)
     {
         pdm_2_pcm_conversion(pdm_buff, pcm_buff);
 
-        err_code = rec_storage_save_data(pcm_buff, pcm_samples_n * 2);
+        err_code = rec_storage_save_samples(pcm_buff, pcm_samples_n * 2);
         assert(err_code == CODE_SUCCESS);
 
         first_half_ready = false;
@@ -214,7 +214,7 @@ void recorder_process(void)
     {
         pdm_2_pcm_conversion(&pdm_buff[RECORDER_PCM_BUFF_SIZE / 2], pcm_buff);
 
-        err_code = rec_storage_save_data(pcm_buff, pcm_samples_n * 2);
+        err_code = rec_storage_save_samples(pcm_buff, pcm_samples_n * 2);
         assert(err_code == CODE_SUCCESS);
 
         second_half_ready = false;

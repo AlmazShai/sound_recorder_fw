@@ -21,6 +21,7 @@
 #define SAMPLE_BUFF_SIZE 124
 
 static uint16_t buff[SAMPLE_BUFF_SIZE];
+static uint16_t r_buff[1024];
 
 /**
  * @brief  The application entry point.
@@ -56,8 +57,17 @@ int main(void)
         assert(err_code == CODE_SUCCESS);
     }
 
+    err_code = board_sd_read_block((uint32_t*)r_buff, 0, 4);
+    assert(err_code == CODE_SUCCESS);
+    for (uint16_t i = 0; i < 1024; i++)
+    {
+        assert(r_buff[i] == i);
+    }
+
     err_code = rec_storage_stop_saving();
     assert(err_code == CODE_SUCCESS);
+
+    printf("Record storage test success!\n");
 
     while (1)
     {}
