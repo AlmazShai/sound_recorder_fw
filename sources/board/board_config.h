@@ -27,5 +27,13 @@
 #define BOARD_MIC_I2S_DMA_IRQ       DMA1_Stream3_IRQn
 
 // Define sd card connection
+#define BOARD_SD_CMD_PIN            GPIO_PIN_2
+#define BOARD_SD_CMD_PORT           GPIOD
+#define BOARD_SD_CK_PIN             GPIO_PIN_12
+#define BOARD_SD_D0_PIN             GPIO_PIN_8
+#define BOARD_SD_D1_PIN             GPIO_PIN_9
+#define BOARD_SD_D2_PIN             GPIO_PIN_10
+#define BOARD_SD_D3_PIN             GPIO_PIN_11
+#define BOARD_SD_DX_PORT            GPIOC
 
 #endif // BOARD_CONFIG_H_

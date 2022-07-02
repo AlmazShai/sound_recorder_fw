@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>sound_recorder_fw</name>
+	<name>rec_storage</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -32,7 +32,7 @@
 		<link>
 			<name>application</name>
 			<type>2</type>
-			<location>/home/almaz/Projects/STM/sound_recorder_fw/sources/application/main_app</location>
+			<location>/home/almaz/Projects/STM/sound_recorder_fw/sources/application/rec_storage_test</location>
 		</link>
 		<link>
 			<name>board</name>
@@ -48,11 +48,6 @@
 			<name>sdk</name>
 			<type>2</type>
 			<location>/home/almaz/Projects/STM/sound_recorder_fw/sources/sdk</location>
-		</link>
-		<link>
-			<name>third_party</name>
-			<type>2</type>
-			<location>/home/almaz/Projects/STM/sound_recorder_fw/sources/third_party</location>
 		</link>
 	</linkedResources>
 </projectDescription>
