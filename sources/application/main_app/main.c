@@ -16,25 +16,31 @@
 
 #include "board.h"
 #include "recorder.h"
+#include "board_button.h"
+#include "board_led.h"
 
+/**
+ * @brief Main event types
+ *
+ */
 typedef enum
 {
-    CONTROL_EVT_NONE,
-    CONTROL_EVT_START,
-    CONTROL_EVT_STOP,
+    CONTROL_EVT_NONE,  // No event
+    CONTROL_EVT_START, // Start recording event
+    CONTROL_EVT_STOP,  // Stop recording event
 } control_evt_t;
 
 static control_evt_t ctrl_evt = CONTROL_EVT_NONE;
 
-static void board_evt_handler(board_evt_t evt_type)
+static void board_evt_handler(board_button_evt_t evt_type)
 {
     switch (evt_type)
     {
-        case BOARD_EVT_BTN_SHORT_PRESS:
+        case BOARD_BUTTON_EVT_SHORT_PRESS:
             printf("Button short press action\n");
             ctrl_evt = CONTROL_EVT_START;
             break;
-        case BOARD_EVT_BTN_LONG_PRESS:
+        case BOARD_BUTTON_EVT_LONG_PRESS:
             printf("Button long press action\n");
             ctrl_evt = CONTROL_EVT_STOP;
             break;
@@ -44,6 +50,10 @@ static void board_evt_handler(board_evt_t evt_type)
     }
 }
 
+/**
+ * @brief Main control events handler
+ *
+ */
 static void main_ctrl(void)
 {
     switch (ctrl_evt)
@@ -51,10 +61,10 @@ static void main_ctrl(void)
         case CONTROL_EVT_NONE:
             break;
         case CONTROL_EVT_START:
-        	if(recorder_get_state() == RECORDER_STATE_RUN)
-        	{
-        		return;
-        	}
+            if (recorder_get_state() == RECORDER_STATE_RUN)
+            {
+                return;
+            }
             if (recorder_start() == CODE_SUCCESS)
             {
                 board_led_blink_enable();
@@ -65,10 +75,10 @@ static void main_ctrl(void)
             }
             break;
         case CONTROL_EVT_STOP:
-        	if(recorder_get_state() == RECORDER_STATE_IDLE)
-        	{
-        		return;
-        	}
+            if (recorder_get_state() == RECORDER_STATE_IDLE)
+            {
+                return;
+            }
             if (recorder_stop() == CODE_SUCCESS)
             {
                 board_led_blink_disable();
@@ -94,23 +104,25 @@ int main(void)
 
     ret_code_t err_code;
 
+    // initialize board
     err_code = board_init();
     assert(err_code == CODE_SUCCESS);
 
+    // initialize button
     err_code = board_button_init();
     assert(err_code == CODE_SUCCESS);
 
+    // initialize led
     err_code = board_led_init();
     assert(err_code == CODE_SUCCESS);
 
-    err_code =   recorder_init();
+    // initialize recorder
+    err_code = recorder_init();
     assert(err_code == CODE_SUCCESS);
 
-    board_set_evt_cb(board_evt_handler);
+    board_button_set_evt_cb(board_evt_handler);
 
     board_button_evt_enable();
-
-
 
     printf("Application initialized\n");
 
@@ -121,7 +133,6 @@ int main(void)
 
         // TODO: add cpu sleeping
     }
-    return -1;
 }
 
 /**
@@ -130,12 +141,9 @@ int main(void)
  */
 void Error_Handler(void)
 {
-    /* USER CODE BEGIN Error_Handler_Debug */
-    /* User can add his own implementation to report the HAL error return state */
     __disable_irq();
     while (1)
     {}
-    /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef USE_FULL_ASSERT

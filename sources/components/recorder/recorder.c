@@ -147,12 +147,16 @@ ret_code_t recorder_init(void)
     err_code = board_mic_init(&cfg);
     if (err_code != CODE_SUCCESS)
     {
-        return err_code;
+        return CODE_ERR_MIC;
     }
     pdm_filter_init();
 
     err_code = rec_storage_init();
-    return err_code;
+    if (err_code != CODE_SUCCESS)
+    {
+        return CODE_ERR_SD_CARD;
+    }
+    return CODE_SUCCESS;
 }
 
 ret_code_t recorder_start(void)
@@ -164,13 +168,13 @@ ret_code_t recorder_start(void)
     err_code = rec_storage_start_saving();
     if (err_code != CODE_SUCCESS)
     {
-        return err_code;
+        return CODE_ERR_SD_CARD;
     }
 
     err_code = board_mic_start_stream();
     if (err_code != CODE_SUCCESS)
     {
-        return err_code;
+        return CODE_ERR_MIC;
     }
     state = RECORDER_STATE_RUN;
     return CODE_SUCCESS;
@@ -183,11 +187,15 @@ ret_code_t recorder_stop(void)
     err_code = board_mic_stop_stream();
     if (err_code != CODE_SUCCESS)
     {
-        return err_code;
+        return CODE_ERR_MIC;
     }
     err_code = rec_storage_stop_saving();
-    state    = RECORDER_STATE_IDLE;
-    return err_code;
+    if (err_code != CODE_SUCCESS)
+    {
+        return CODE_ERR_SD_CARD;
+    }
+    state = RECORDER_STATE_IDLE;
+    return CODE_SUCCESS;
 }
 
 void recorder_process(void)

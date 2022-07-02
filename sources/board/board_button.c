@@ -1,4 +1,4 @@
-#include "board.h"
+#include "board_button.h"
 
 #include "stm32f4xx_hal.h"
 
@@ -14,9 +14,9 @@ typedef enum
     TIM_STATE_LONG_PRESS_DETECTION,
 } tim_state_t;
 
-static board_evt_cb_t       evt_cb     = NULL;
-static TIM_HandleTypeDef    tim_button = {0};
-static volatile tim_state_t tim_state  = TIM_STATE_IDLE;
+static board_button_evt_cb_t evt_cb     = NULL;
+static TIM_HandleTypeDef     tim_button = {0};
+static volatile tim_state_t  tim_state  = TIM_STATE_IDLE;
 
 void EXTI0_IRQHandler(void)
 {
@@ -28,7 +28,7 @@ void TIM3_IRQHandler(void)
     HAL_TIM_IRQHandler(&tim_button);
 }
 
-static void handle_cb(board_evt_t evt_type)
+static void handle_cb(board_button_evt_t evt_type)
 {
     if (evt_cb != NULL)
     {
@@ -94,7 +94,7 @@ static void timeout_handler(TIM_HandleTypeDef* htim)
         if (pin_state == GPIO_PIN_SET)
         {
             stop_long_press_timer();
-            handle_cb(BOARD_EVT_BTN_LONG_PRESS);
+            handle_cb(BOARD_BUTTON_EVT_LONG_PRESS);
             tim_state = TIM_STATE_IDLE;
         }
     }
@@ -130,7 +130,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t pin)
         if (tim_state == TIM_STATE_LONG_PRESS_DETECTION)
         {
             stop_long_press_timer();
-            handle_cb(BOARD_EVT_BTN_SHORT_PRESS);
+            handle_cb(BOARD_BUTTON_EVT_SHORT_PRESS);
         }
         start_debounce_timer();
         tim_state = TIM_STATE_RELEASE_DEBOUNCING;
@@ -224,7 +224,7 @@ ret_code_t board_button_init(void)
     return timer_init();
 }
 
-void board_set_evt_cb(board_evt_cb_t cb)
+void board_button_set_evt_cb(board_button_evt_cb_t cb)
 {
     evt_cb = cb;
 }

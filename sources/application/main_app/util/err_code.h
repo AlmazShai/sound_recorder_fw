@@ -15,5 +15,7 @@ typedef uint32_t ret_code_t;
 #define CODE_ERR_TIMEOUT       (RET_CODE_BASE_NUM + 5u)
 #define CODE_ERR_NOT_FOUND     (RET_CODE_BASE_NUM + 6u)
 #define CODE_ERR_NO_MEM        (RET_CODE_BASE_NUM + 7u)
+#define CODE_ERR_MIC           (RET_CODE_BASE_NUM + 8u)
+#define CODE_ERR_SD_CARD       (RET_CODE_BASE_NUM + 9u)
 
 #endif // ERR_CODE_H_

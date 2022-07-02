@@ -1,7 +1,19 @@
+/**
+ * @file    board_config.h
+ * @author  Almaz Shaidullin (almazshai@gmail.com)
+ * @brief   Board configuration file.
+ * @details This configuration file help configure the board periphery. This file can be
+ *          individual for each board revision.
+ * @version 0.1
+ * @date 2022-07-02
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #ifndef BOARD_CONFIG_H_
 #define BOARD_CONFIG_H_
 
-#include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx.h"
 
 // Define recording start/stop pin

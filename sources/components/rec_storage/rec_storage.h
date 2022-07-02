@@ -17,12 +17,12 @@
 #define REC_STORAGE_BUFF_SIZE_BYTES 512
 
 /**
- * @brief This fuction initialize recorder storage.
+ * @brief   This fuction initialize recorder storage.
  *
  * @details While initializing all sd card card will erased.
  *
- * @retval CODE_SUCCESS - Initalized successfully
- * @retval CODE_ERR_INTERNAL - sd card communication error
+ * @retval  CODE_SUCCESS - Initalized successfully
+ * @retval  CODE_ERR_INTERNAL - sd card communication error
  */
 ret_code_t rec_storage_init(void);
 
@@ -36,18 +36,18 @@ ret_code_t rec_storage_start_saving(void);
 /**
  * @brief   This fuction save new samples to external memory.
  *
- * @param p_data    Pointer to samples
- * @param len_bytes SIze of samples in byte unit
+ * @param   p_data    Pointer to samples
+ * @param   len_bytes SIze of samples in byte unit
  *
- * @retval CODE_SUCCESS - New samples was successfully saved
- * @retval CODE_ERR_INTERNAL - Sd card communication error
+ * @retval  CODE_SUCCESS - New samples was successfully saved
+ * @retval  CODE_ERR_INTERNAL - Sd card communication error
  */
 ret_code_t rec_storage_save_samples(uint16_t* p_data, uint16_t len_bytes);
 
 /**
  * @brief   This function stops the record saving
  *
- * @retval CODE_SUCCESS - Record saving was successfully stoped.
+ * @retval  CODE_SUCCESS - Record saving was successfully stoped.
  */
 ret_code_t rec_storage_stop_saving(void);
 
