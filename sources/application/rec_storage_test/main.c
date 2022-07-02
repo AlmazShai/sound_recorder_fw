@@ -18,7 +18,7 @@
 #include "board_sd.h"
 #include "rec_storage.h"
 
-#define SAMPLE_BUFF_SIZE 124
+#define SAMPLE_BUFF_SIZE 160
 
 static uint16_t buff[SAMPLE_BUFF_SIZE];
 static uint16_t r_buff[1024];
@@ -55,9 +55,10 @@ int main(void)
         }
         err_code = rec_storage_save_samples(buff, sizeof(buff));
         assert(err_code == CODE_SUCCESS);
+        HAL_Delay(5);
     }
 
-    err_code = board_sd_read_block((uint32_t*)r_buff, 0, 4);
+    err_code = board_sd_read_block((uint8_t*)r_buff, 0, 4);
     assert(err_code == CODE_SUCCESS);
     for (uint16_t i = 0; i < 1024; i++)
     {

@@ -5,10 +5,34 @@
 #include "board_config.h"
 
 static SD_HandleTypeDef hsd;
+static volatile bool    sd_busy = false;
+
+void SDIO_IRQHandler(void)
+{
+    HAL_SD_IRQHandler(&hsd);
+}
+
+void HAL_SD_TxCpltCallback(SD_HandleTypeDef* hsd)
+{
+    if (hsd->Instance != SDIO)
+    {
+        return;
+    }
+    sd_busy = false;
+}
+
+void HAL_SD_RxCpltCallback(SD_HandleTypeDef* hsd)
+{
+    if (hsd->Instance != SDIO)
+    {
+        return;
+    }
+    sd_busy = false;
+}
 
 static void gpio_init(void)
 {
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
     __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOD_CLK_ENABLE();
 
@@ -20,7 +44,6 @@ static void gpio_init(void)
     GPIO_InitStruct.Alternate = GPIO_AF12_SDIO;
     HAL_GPIO_Init(BOARD_SD_DX_PORT, &GPIO_InitStruct);
 
-
     GPIO_InitStruct.Pin       = BOARD_SD_CMD_PIN;
     GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull      = GPIO_PULLUP;
@@ -31,9 +54,10 @@ static void gpio_init(void)
 
 static ret_code_t sdio_init(void)
 {
-
     __HAL_RCC_SDIO_CLK_ENABLE();
 
+    HAL_NVIC_SetPriority(SDIO_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(SDIO_IRQn);
 
     hsd.Instance                 = SDIO;
     hsd.Init.ClockEdge           = SDIO_CLOCK_EDGE_RISING;
@@ -60,7 +84,7 @@ static ret_code_t sdio_init(void)
 
 static ret_code_t wait_while_busy(void)
 {
-	uint16_t timeout_tick = 0;
+    uint16_t timeout_tick = 0;
     while (HAL_SD_GetCardState(&hsd) != HAL_SD_CARD_TRANSFER)
     {
         HAL_Delay(1);
@@ -80,10 +104,10 @@ ret_code_t board_sd_init(void)
     return sdio_init();
 }
 
-ret_code_t board_sd_read_block(uint32_t* p_data, uint32_t read_addr, uint32_t block_n)
+ret_code_t board_sd_read_block(uint8_t* p_data, uint32_t read_addr, uint32_t block_n)
 {
-    if (HAL_SD_ReadBlocks(&hsd, (uint8_t*)p_data, read_addr, block_n,
-                          BOARD_SD_OP_TIMEOUT_MS) != HAL_OK)
+    if (HAL_SD_ReadBlocks(&hsd, p_data, read_addr, block_n, BOARD_SD_OP_TIMEOUT_MS) !=
+        HAL_OK)
     {
         return CODE_ERR_INTERNAL;
     }
@@ -91,15 +115,43 @@ ret_code_t board_sd_read_block(uint32_t* p_data, uint32_t read_addr, uint32_t bl
     return wait_while_busy();
 }
 
-ret_code_t board_sd_write_block(uint32_t* p_data, uint32_t write_addr, uint32_t block_n)
+ret_code_t board_sd_write_block(uint8_t* p_data, uint32_t write_addr, uint32_t block_n)
 {
-    if (HAL_SD_WriteBlocks(&hsd, (uint8_t*)p_data, write_addr, block_n,
-                           BOARD_SD_OP_TIMEOUT_MS) != HAL_OK)
+    if (HAL_SD_WriteBlocks(&hsd, p_data, write_addr, block_n, BOARD_SD_OP_TIMEOUT_MS) !=
+        HAL_OK)
     {
         return CODE_ERR_INTERNAL;
     }
 
     return wait_while_busy();
+}
+
+ret_code_t board_sd_read_block_it(uint8_t* p_data, uint32_t read_addr, uint32_t block_n)
+{
+    if (sd_busy || board_sd_is_busy())
+    {
+        return CODE_ERR_BUSY;
+    }
+
+    if (HAL_SD_ReadBlocks_IT(&hsd, p_data, read_addr, block_n) != HAL_OK)
+    {
+        return CODE_ERR_INTERNAL;
+    }
+    return CODE_SUCCESS;
+}
+
+ret_code_t board_sd_write_block_it(uint8_t* p_data, uint32_t write_addr, uint32_t block_n)
+{
+    if (sd_busy || board_sd_is_busy())
+    {
+        return CODE_ERR_BUSY;
+    }
+
+    if (HAL_SD_WriteBlocks_IT(&hsd, p_data, write_addr, block_n) != HAL_OK)
+    {
+        return CODE_ERR_INTERNAL;
+    }
+    return CODE_SUCCESS;
 }
 
 ret_code_t board_sd_erase(uint32_t start_addr, uint32_t end_addr)
@@ -124,7 +176,7 @@ ret_code_t board_sd_erase_all(void)
 
 bool board_sd_is_busy(void)
 {
-    return (HAL_SD_GetCardState(&hsd) == HAL_SD_CARD_TRANSFER) ? true : false;
+    return (HAL_SD_GetCardState(&hsd) == HAL_SD_CARD_TRANSFER) ? false : true;
 }
 
 ret_code_t board_sd_get_info(board_sd_info_t* p_info)

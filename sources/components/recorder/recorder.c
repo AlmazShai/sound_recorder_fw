@@ -186,7 +186,7 @@ ret_code_t recorder_stop(void)
         return err_code;
     }
     err_code = rec_storage_stop_saving();
-    state = RECORDER_STATE_IDLE;
+    state    = RECORDER_STATE_IDLE;
     return err_code;
 }
 
