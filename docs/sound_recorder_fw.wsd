@@ -1,62 +1,50 @@
-@startuml
+@startuml fw_architecture
 
-class main {
+interface main {
     + main()
 }
 
-class board {
+interface board {
     + board_init()
+    + board_button_init()
+    + board_button_set_evt_cb()
+    + board_button_enable_evt()
+    + board_button_disable_evt()
+    + board_led_init()
+    + board_led_blink_enable()
+    + board_led_blink_disable()
+    + baard_mic_init()
+    + baard_mic_start_stream()
+    + baard_mic_stop_stream()
 }
 
-class board_config {
-}
-
-class button {
-    + button_init()
-    + button_set_evt_cb()
-    + button_enable_evt()
-    + button_disable_evt()
-}
-
-class recorder {
+interface recorder {
     + recorder_init()
-    + recorder_set_evt_cb()
-    + recorder_run()
     + recorder_start()
     + recorder_stop()
+    + recorder_process()
+    + recorder_get_state()
 }
 
-class rec_timer {
+interface rec_timer {
     + rec_timer_init()
     + rec_timer_set_cb()
     + rec_timer_start()
     + rec_timer_stop()
 }
 
-class rec_storage {
+interface rec_storage {
     + rec_storage_init()
     + rec_storage_start_saving()
-    + rec_storege_save()
+    + rec_storege_save_samples()
     + rec_storage_stop_saving()
-}
-
-class mic {
-    + mic_init()
-    + mic_start_stream()
-    + mic_stop_stream()
-    + mic_get_data()
 }
 
 main --> recorder
 main --> board
-main --> button
 
 recorder --> rec_timer
-recorder --> mic
+recorder --> board
 recorder --> rec_storage
-
-board_config ..> mic
-board_config ..> rec_storage
-board_config ..> button
 
 @enduml
