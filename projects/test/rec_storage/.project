@@ -32,22 +32,22 @@
 		<link>
 			<name>application</name>
 			<type>2</type>
-			<location>/home/almaz/Projects/STM/sound_recorder_fw/sources/application/rec_storage_test</location>
+			<locationURI>PARENT-3-PROJECT_LOC/sources/application/rec_storage_test</locationURI>
 		</link>
 		<link>
 			<name>board</name>
 			<type>2</type>
-			<location>/home/almaz/Projects/STM/sound_recorder_fw/sources/board</location>
+			<locationURI>PARENT-3-PROJECT_LOC/sources/board</locationURI>
 		</link>
 		<link>
 			<name>components</name>
 			<type>2</type>
-			<location>/home/almaz/Projects/STM/sound_recorder_fw/sources/components</location>
+			<locationURI>PARENT-3-PROJECT_LOC/sources/components</locationURI>
 		</link>
 		<link>
 			<name>sdk</name>
 			<type>2</type>
-			<location>/home/almaz/Projects/STM/sound_recorder_fw/sources/sdk</location>
+			<locationURI>PARENT-3-PROJECT_LOC/sources/sdk</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
