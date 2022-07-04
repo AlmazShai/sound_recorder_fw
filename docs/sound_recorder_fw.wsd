@@ -16,6 +16,11 @@ interface board {
     + baard_mic_init()
     + baard_mic_start_stream()
     + baard_mic_stop_stream()
+    + board_sd_init()
+    + board_sd_read_block()
+    + board_sd_write_block()
+    + board_sd_erase()
+    + board_sd_is_busy()
 }
 
 interface recorder {
@@ -46,5 +51,6 @@ main --> board
 recorder --> rec_timer
 recorder --> board
 recorder --> rec_storage
+rec_storage --> board
 
 @enduml
